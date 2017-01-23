@@ -353,7 +353,8 @@ public class CoberturaPublisher extends Recorder implements SimpleBuildStep {
     public void perform(Run<?, ?> build, FilePath workspace, Launcher launcher, final TaskListener listener)
             throws InterruptedException, IOException {
         Result threshold = onlyStable ? Result.SUCCESS : Result.UNSTABLE;
-        if (build.getResult() != null && build.getResult().isWorseThan(threshold)) {
+        Result buildResult = build.getResult();
+        if (buildResult != null && buildResult.isWorseThan(threshold)) {
             listener.getLogger().println("Skipping Cobertura coverage report as build was not " + threshold.toString() + " or better ...");
             return;
         }
@@ -368,7 +369,7 @@ public class CoberturaPublisher extends Recorder implements SimpleBuildStep {
 
             // if the build has failed, then there's not
             // much point in reporting an error
-            if (build.getResult() != null && build.getResult().isWorseOrEqualTo(Result.FAILURE) && reports.length == 0) {
+            if (buildResult != null && buildResult.isWorseOrEqualTo(Result.FAILURE) && reports.length == 0) {
                 return;
             }
 
@@ -682,6 +683,9 @@ public class CoberturaPublisher extends Recorder implements SimpleBuildStep {
          */
         @Override
         public CoberturaPublisher newInstance(StaplerRequest req, JSONObject formData) throws FormException {
+        	if (req == null) {
+        		return null;
+        	}
             CoberturaPublisher instance = req.bindJSON(CoberturaPublisher.class, formData);
             ConvertUtils.register(CoberturaPublisherTarget.CONVERTER, CoverageMetric.class);
             List<CoberturaPublisherTarget> targets = req

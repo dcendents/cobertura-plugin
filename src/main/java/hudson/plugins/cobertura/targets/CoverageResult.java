@@ -366,7 +366,7 @@ public class CoverageResult implements Serializable, Chartable {
     	List<CoverageMetric> missingMetrics = new LinkedList<CoverageMetric>();
     	for (CoverageMetric currMetric : allMetrics)
     	{
-    		if (!currMetricSet.containsKey(currMetric.getName()))
+    		if (!currMetricSet.containsKey(currMetric))
     		{
     			missingMetrics.add(currMetric);
     		}
